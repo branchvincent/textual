@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+from importlib.metadata import version
 from typing import TYPE_CHECKING, Callable
 
 import rich.repr
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias
 
 __all__ = [
-    "__version__",  # type: ignore
+    "__version__",
     "log",
     "on",
     "panic",
@@ -26,19 +27,7 @@ __all__ = [
 
 LogCallable: TypeAlias = "Callable"
 
-
-def __getattr__(name: str) -> str:
-    """Lazily get the version from whatever API is available."""
-    if name == "__version__":
-        try:
-            from importlib.metadata import version
-        except ImportError:
-            import pkg_resources
-
-            return pkg_resources.get_distribution("textual").version
-        else:
-            return version("textual")
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+__version__ = version("textual")
 
 
 class LoggerError(Exception):
